@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block start %}
+
+<div class="container mt-5 mx-auto col-md-3 card shadow p-3">
+	<div class="login-form">
+		{% if messages %}
+			{% for message in messages %}
+				<div class="alert alert-success {{ message.tags }}" role="alert">
+					{{ message }}
+				</div>
+			{% endfor %}
+		{% endif %}
+		<form action="" method="post">
+			{% csrf_token %}
+			<h2 class="text-center">Register</h2>
+			<br>
+			<div class="form-group">
+				<input type="text" class="form-control" name="username" placeholder="Username" required>
+			</div>
+			<div class="form-group mt-3">
+				<input type="password" class="form-control" name="password" placeholder="Password" required>
+			</div>
+			<div class="form-group mt-3">
+				<button class="btn btn-success btn-block">Register</button>
+			</div>
+		</form>
+		<p class="text-center"><a href="{% url 'login' %}">Log In</a></p>
+	</div>
+</div>
+
+<style>
+	/* Custom CSS for UI enhancements */
+	.card {
+		background-color: #f7f7f7;
+		
+	}
+
+	.login-form {
+		padding: 20px;
+	}
+
+	.btn-primary {
+		background-color: #007bff;
+		border-color: #007bff;
+	}
+
+	.btn-primary:hover {
+		background-color: #0056b3;
+		border-color: #0056b3;
+	}
+
+
+</style>
+
+{% endblock %}

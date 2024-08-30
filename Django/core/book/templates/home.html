@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Django Blogs</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- Add Materialize CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+	<!-- Add Materialize JavaScript (optional, if you need JavaScript features) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<style>
+		/* Custom CSS styles for your page */
+		body {
+			background-color: #f5f5f5;
+		}
+		.nav-wrapper {
+			background-color: white ; /* Bootstrap's typical warning color */
+		}
+
+		.brand-logo {
+			margin-left: 20px;
+			margin-top: -1%;
+			
+		}
+
+		.container {
+			margin-top: 20px;
+		}
+
+		.card {
+			margin: 10px;
+		}
+
+		.card-title {
+			font-size: 1.2rem;
+			color: #333; /* Text color for card titles */
+		}
+
+		.range-field {
+			padding: 20px 0;
+		}
+
+		/* Added styles for better spacing and alignment */
+		.input-field {
+			margin-bottom: 20px;
+		}
+		.gfg{
+			margin-left: 40%;
+			font-size: 40px;
+		font-weight: 500;
+			color: green;
+		}
+		/* Adjusted card width and added shadow */
+		.card {
+			width: 100%;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		}
+
+		/* Centered card content */
+		.card-content {
+			text-align: center;
+		}
+		#web{
+			margin-left: 85%;
+			font-size: 20px;
+			padding: 5px 20px;
+			background-color: rgb(101, 119, 225);
+		}.JT{
+			margin-top: -10%;
+			font-size: 23px;
+			color: black;
+			font-weight: 400;
+		}.ex{
+			margin-top: 2%;
+		}
+		.blog{
+			color: black;
+		}
+	</style>
+</head>
+<body>
+	<nav>
+		<div class="nav-wrapper">
+			<a href="/" class="brand-logo"><h4 class="blog">Blog Post Recommendation</h4></a>
+			<a href="" id="web"> <i class="fas fa-globe"></i> Website</a>
+			</div>
+	</nav>
+	<h1 class="gfg">Make Your Choice!</h1>
+	<br>
+	<br>
+	<div class="container">
+		<div class="row">
+			<div class="col m5">
+				<div class="input-field col s12">
+					<select multiple onchange="getBlogs()" id="emenities" onchange="getBlogs()">
+								<option value="" disabled selected>Choose Your Option</option>
+						{% for emenitie in emenities %}
+						<option value="{{emenitie.id}}">{{emenitie.name}}</option>
+						{% endfor %}
+					</select>
+					<label for="emenities"><h3 class="JT"> <i class="fas fa-book"></i> Select Blog Type :</h3></label>
+				</div>
+			</div>
+
+			<div class="col m4 ex">
+				<label for="price"><h3 class="JT"> Short By Traffic : </h3> </label>
+				
+				<p class="range-field">
+					<input type="range" onchange="getBlogs()" id="price" min="100" max="1000" value="10" >	 
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row" id="show_blogs_here">
+		</div>
+	</div> 
+
+	<script>
+		// Initialize the show_blogs_here variable
+		var show_blogs_here = document.getElementById("show_blogs_here");
+
+		$(document).ready(function(){
+			$('select').formSelect();
+		});
+
+		function getBlogs() {
+			var price = document.getElementById("price").value;
+			var instance = M.FormSelect.getInstance(document.getElementById('emenities'));
+			var emenities = '';
+			var html = '';
+
+			if(instance){
+				emenities = instance.getSelectedValues();
+			}
+
+			fetch(`/api/blogs?emenities=${emenities}&price=${price}`)
+			.then(result => result.json())
+			.then(response => {
+				for (var i = 0; i < response.length; i++) {
+					// Use template literals (backticks) to create the HTML markup
+					html += `
+						<div class="col s12 m4 " >
+							<div class="card" id="blog">
+							
+								<div class="card-content">
+									<span class=" gfg1" >${response[i].blog_name}</span>
+									<p class ="gfgd" >${response[i].blog_description}</p>
+									<p class = "ex23"> Traffic >: <strong> ${response[i].price} </strong>/day<p>
+									<br>
+									<button type="submit" class ="btn"> Read</button>
+								</div>
+							</div>
+						</div>
+					`;
+				}
+				show_blogs_here.innerHTML = html;
+			});
+			
+		}
+	getBlogs()
+	</script>
+	<style>
+		#blog{
+			border-radius: 10px;
+			border: 0.5px solid black;
+		}
+		.ex23{
+			font-size: 10px;
+		}
+		.gfg1{
+			color: rgb(78, 71, 71);
+			font-size: 25px;
+			font-weight: bold;
+		}.gfgd{
+			color: gray;
+		}
+		.btn{
+			padding: 0px 10px;
+			font-weight: bold;
+			background-color: rgb(226, 84, 84);
+		}
+	</style>
+</body>
+</html>
